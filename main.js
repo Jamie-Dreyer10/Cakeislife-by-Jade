@@ -469,7 +469,6 @@
       'Occasion: ' + occasion,
       'Date needed: ' + nice,
       'I would like: ' + type,
-      'People: ' + (v('f-servings') || 'Not sure yet'),
       'My area: ' + (v('f-area') || 'Not given'),
       'Collect or deliver: ' + v('f-method'),
       '',

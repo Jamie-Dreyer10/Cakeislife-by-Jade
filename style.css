@@ -252,6 +252,7 @@ input:focus, select:focus, textarea:focus { outline: 3px solid rgba(155, 107, 20
 textarea { resize: vertical; }
 .form-error { color: #B00020; font-weight: 700; margin-bottom: 12px; }
 .form-error[hidden] { display: none; }
+.hint { font-size: .88rem; color: var(--muted); margin: -4px 0 16px; }
 .fine { font-size: .85rem; color: var(--muted); text-align: center; margin: 12px 0 0; }
 
 /* Photo upload */
