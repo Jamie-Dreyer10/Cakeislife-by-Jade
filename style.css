@@ -99,9 +99,11 @@ p { margin: 0 0 1em; }
 .header-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
 .brand img { border-radius: 50%; }
-.brand-text { font-family: var(--font-script); font-size: 1.5rem; color: var(--pink-deep); }
+.brand-text { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+.bt-main { font-family: var(--font-script); font-size: 1.6rem; color: #E8559A; }
+.bt-by { font-family: 'Saira Condensed', 'DM Sans', sans-serif; font-weight: 600; font-size: .78rem; letter-spacing: .28em; text-transform: uppercase; color: var(--ink); margin-top: 3px; padding-left: .28em; }
 
-.nav { display: flex; align-items: center; gap: 26px; }
+.nav { display: flex; align-items: center; gap: 22px; }
 .nav a { text-decoration: none; color: var(--ink); font-weight: 500; }
 .nav a:hover { color: var(--pink-deep); }
 .nav a.btn { color: #fff; }
@@ -277,6 +279,43 @@ textarea { resize: vertical; }
 .photo-step h3 { font-size: 1.15rem; }
 .photo-step .btn { margin: 4px 4px 0; }
 
+
+/* ---------- Cake designer ---------- */
+.designer { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.designer-preview {
+  position: sticky; top: 92px;
+  background: #fff; border: 2px dashed var(--sage); border-radius: 24px; padding: 18px 18px 14px;
+  box-shadow: var(--shadow);
+  background-image: radial-gradient(circle at 20% 15%, var(--sage-soft), transparent 55%), radial-gradient(circle at 85% 90%, var(--pink-soft), transparent 55%);
+}
+.designer-preview svg { width: 100%; height: auto; max-height: 440px; display: block; margin: 0 auto; }
+.designer-note { font-size: .85rem; color: var(--muted); text-align: center; margin: 8px 0 0; }
+
+.cd-group { border: 0; padding: 0; margin: 0 0 22px; min-width: 0; }
+.cd-group legend { font-weight: 700; font-size: .95rem; margin-bottom: 10px; padding: 0; }
+#cdColorName { color: var(--pink-deep); }
+
+.seg { display: inline-flex; border: 2px solid var(--pink-deep); border-radius: 999px; overflow: hidden; }
+.seg button {
+  font: inherit; font-weight: 700; padding: 10px 22px; border: 0; background: #fff; color: var(--pink-deep); cursor: pointer;
+}
+.seg button + button { border-left: 2px solid var(--pink-deep); }
+.seg button[aria-pressed="true"] { background: var(--pink-deep); color: #fff; }
+.seg button:focus-visible, .swatch:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 12px; }
+.swatch {
+  width: 40px; height: 40px; border-radius: 50%; cursor: pointer; padding: 0;
+  border: 3px solid #fff; box-shadow: 0 0 0 1.5px #D9CFC9, 0 3px 8px rgba(42, 34, 51, .15);
+  transition: transform .12s;
+}
+.swatch:hover { transform: scale(1.1); }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--pink-deep), 0 3px 8px rgba(42, 34, 51, .2); }
+
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+.check { display: flex; align-items: center; gap: 10px; font-weight: 500; margin: 0; cursor: pointer; }
+.check input { width: 20px; height: 20px; accent-color: var(--pink-deep); flex: none; }
+
 /* ---------- Footer ---------- */
 .footer { background: #33283A; color: #E9DFF0; padding: 44px 0 90px; text-align: center; border-top: 6px solid var(--sage); }
 .footer a { color: #FFC4DE; }
@@ -329,6 +368,10 @@ textarea { resize: vertical; }
   .about-img { max-width: 260px; margin: 0 auto; }
   .section-title.left { text-align: center; }
   .order { grid-template-columns: 1fr; }
+  .designer { grid-template-columns: 1fr; gap: 22px; }
+  .designer-preview { top: 72px; z-index: 5; padding: 10px 14px 8px; }
+  .designer-preview svg { max-height: 215px; }
+  .designer-note { display: none; }
 }
 
 /* ---------- Phone ---------- */
@@ -351,6 +394,8 @@ textarea { resize: vertical; }
   .row { grid-template-columns: 1fr; gap: 0; }
   .form { padding: 22px; }
   .hero-actions .btn { flex: 1 1 100%; }
+  .bt-main { font-size: 1.45rem; }
+  .checks { grid-template-columns: 1fr; }
   .sprig { opacity: .25; }
 }
 

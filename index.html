@@ -39,7 +39,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Courgette&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Courgette&family=DM+Sans:wght@400;500;700&family=Saira+Condensed:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -63,14 +63,16 @@
     <div class="wrap header-inner">
       <a class="brand" href="#top" aria-label="Cake is Life by Jade - home">
         <img src="logo.png" alt="" width="52" height="52">
-        <span class="brand-text">Cake is Life</span>
+        <span class="brand-text"><span class="bt-main">Cake is Life</span><span class="bt-by">by Jade</span></span>
       </a>
       <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
         <span></span><span></span><span></span>
       </button>
       <nav id="nav" class="nav" aria-label="Main">
+        <a href="#top">Home</a>
         <a href="#gallery">Gallery</a>
         <a href="#cakes">What I Bake</a>
+        <a href="#designer">Cake Designer</a>
         <a href="#about">About</a>
         <a href="#how">How to Order</a>
         <a href="#order" class="btn btn-small">Order a Cake</a>
@@ -202,6 +204,55 @@
             <h3>Designed to your liking</h3>
             <p>Have a theme, a colour palette or a photo you love? Tell me your idea and I'll bring it to life. I love getting creative and adding a personal touch to every order.</p>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CAKE DESIGNER ============ -->
+    <section class="section" id="designer">
+      <div class="wrap">
+        <h2 class="section-title">Design your <span class="script">dream cake</span></h2>
+        <p class="section-sub">Play with tiers, colours and little extras, then send your sketch straight to Jade. She'll bring it to life and make it even better.</p>
+
+        <div class="designer">
+          <div class="designer-preview">
+            <svg id="cdSvg" viewBox="0 0 300 340" role="img" aria-label="Preview of your cake design"></svg>
+            <p class="designer-note">A quick sketch of your idea. Jade makes the real cake by hand, with your changes and her own creative touches.</p>
+          </div>
+
+          <div class="designer-controls">
+            <fieldset class="cd-group">
+              <legend>How many tiers?</legend>
+              <div class="seg" id="cdTiers">
+                <button type="button" data-tiers="1" aria-pressed="false">1 tier</button>
+                <button type="button" data-tiers="2" aria-pressed="true">2 tiers</button>
+                <button type="button" data-tiers="3" aria-pressed="false">3 tiers</button>
+              </div>
+            </fieldset>
+
+            <fieldset class="cd-group">
+              <legend>Cake colour: <span id="cdColorName"></span></legend>
+              <div class="swatches" id="cdColors"></div>
+            </fieldset>
+
+            <fieldset class="cd-group">
+              <legend>Little extras</legend>
+              <div class="checks">
+                <label class="check"><input type="checkbox" id="cdBows" checked> Ribbon bows</label>
+                <label class="check"><input type="checkbox" id="cdPearls" checked> Gold pearls</label>
+                <label class="check"><input type="checkbox" id="cdDrip"> Chocolate drip</label>
+                <label class="check"><input type="checkbox" id="cdLeaves" checked> Leaves &amp; greenery</label>
+              </div>
+            </fieldset>
+
+            <div class="field">
+              <label for="cdTopper">What should the topper say?</label>
+              <input id="cdTopper" type="text" maxlength="28" value="Happy Birthday" autocomplete="off">
+            </div>
+
+            <button type="button" class="btn" id="cdUse">Use this design in my order</button>
+            <p class="fine" id="cdDone" role="status" hidden>Added to your order form below. You can still change anything.</p>
+          </div>
         </div>
       </div>
     </section>

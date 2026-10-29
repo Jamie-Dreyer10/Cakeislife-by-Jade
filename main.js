@@ -168,6 +168,8 @@
 
   function showError(msg) { errBox.textContent = msg; errBox.hidden = false; }
 
+  function pushPhoto(f) { var entry = { file: f, url: URL.createObjectURL(f) }; photos.push(entry); return entry; }
+
   // Shrink big phone photos so they send quickly
   function compress(file) {
     return new Promise(function (resolve) {
@@ -222,10 +224,211 @@
     chosen = chosen.slice(0, Math.max(room, 0));
     fileInput.value = '';
     Promise.all(chosen.map(compress)).then(function (files) {
-      files.forEach(function (f) { photos.push({ file: f, url: URL.createObjectURL(f) }); });
+      files.forEach(pushPhoto);
       renderThumbs();
     });
   });
+
+  /* ---------- Cake designer ---------- */
+  var cdSvg = $('cdSvg');
+  if (cdSvg) {
+    var COLORS = [
+      { name: 'Blush pink', hex: '#F6A3C7' },
+      { name: 'Hot pink', hex: '#EC5C9C' },
+      { name: 'Berry', hex: '#B8325E' },
+      { name: 'Lilac', hex: '#C9A8EC' },
+      { name: 'Sky blue', hex: '#9CC9EE' },
+      { name: 'Sage green', hex: '#A9CBA3' },
+      { name: 'Butter yellow', hex: '#F6DE8A' },
+      { name: 'Peach', hex: '#F8C6A5' },
+      { name: 'Ivory', hex: '#FBF6EE' },
+      { name: 'Black', hex: '#34303A' }
+    ];
+    var GEO = {
+      1: { w: [190], h: [130] },
+      2: { w: [210, 146], h: [84, 76] },
+      3: { w: [230, 170, 114], h: [66, 60, 54] }
+    };
+    var CD = { tiers: 2, ci: 0, bows: true, pearls: true, drip: false, leaves: true, topper: 'Happy Birthday' };
+
+    var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var rgb = function (hex) { var n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+    var mix = function (hex, toWhite, amt) {
+      var c = rgb(hex), t = toWhite ? 255 : 0;
+      return 'rgb(' + c.map(function (v) { return Math.round(v + (t - v) * amt); }).join(',') + ')';
+    };
+    var lum = function (hex) { var c = rgb(hex); return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255; };
+
+    function bow(x, y, colour) {
+      return '<g transform="translate(' + x + ',' + y + ')" fill="' + colour + '" stroke="rgba(0,0,0,.12)" stroke-width=".6">' +
+        '<path d="M0,0 C-8,-12 -21,-6 -17,4 C-14,9 -4,4 0,0Z"/><path d="M0,0 C8,-12 21,-6 17,4 C14,9 4,4 0,0Z"/>' +
+        '<path d="M0,2 C-4,14 -9,22 -10,32 L-5,29 L-3,34 C-1,22 1,12 0,2Z"/><path d="M0,2 C4,14 9,22 10,32 L5,29 L3,34 C1,22 -1,12 0,2Z"/>' +
+        '<circle r="3" cy="1"/></g>';
+    }
+    function sprig(x, y, rot, h, colour) {
+      return '<g transform="translate(' + x + ',' + y + ') rotate(' + rot + ')" style="color:' + colour + '">' +
+        '<use href="#cdLeaf" x="' + (-h / 4) + '" y="' + (-h) + '" width="' + (h / 2) + '" height="' + h + '"/></g>';
+    }
+
+    function renderCake() {
+      var n = CD.tiers, W = GEO[n].w, H = GEO[n].h, cx = 150, base = 300, ry = 10;
+      var col = COLORS[CD.ci].hex, light = mix(col, true, .3);
+      var dark = lum(col) < 0.35, pale = lum(col) > 0.82;
+      var dripCol = dark ? '#D9A441' : '#6B4332';
+      var ribbon = pale ? '#EC5C9C' : '#FFFFFF';
+      var green = '#6E9A6A';
+      var pr = W[0] / 2 + 26;
+      var s = '<defs><linearGradient id="cdShade" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>' +
+        '<symbol id="cdLeaf" viewBox="0 0 100 200"><path d="M50 198 C 48 140 56 70 50 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>' +
+        '<path fill="currentColor" d="M50 150 C 22 146 8 124 10 104 C 36 106 52 126 50 150Z"/><path fill="currentColor" d="M50 120 C 78 116 92 94 90 74 C 64 76 48 96 50 120Z"/>' +
+        '<path fill="currentColor" d="M50 92 C 24 88 12 68 14 50 C 38 52 52 70 50 92Z"/><path fill="currentColor" d="M51 64 C 76 60 88 42 86 26 C 64 28 50 44 51 64Z"/>' +
+        '<path fill="currentColor" d="M50 30 C 42 20 44 10 50 4 C 58 12 58 22 50 30Z"/></symbol></defs>';
+
+      // plate
+      s += '<ellipse cx="150" cy="' + (base + 24) + '" rx="' + (pr + 8) + '" ry="12" fill="#2A2233" opacity=".08"/>' +
+        '<ellipse cx="150" cy="' + (base + 10) + '" rx="' + pr + '" ry="15" fill="#E7DDE3"/>' +
+        '<ellipse cx="150" cy="' + (base + 4) + '" rx="' + pr + '" ry="15" fill="#fff" stroke="#EFE3EA"/>';
+
+      if (CD.leaves) {
+        s += sprig(cx - W[0] / 2 + 4, base + 6, -52, 62, green) + sprig(cx + W[0] / 2 - 4, base + 6, 52, 62, green);
+      }
+
+      var yBot = base, topY = base, topW = W[0];
+      for (var i = 0; i < n; i++) {
+        var w = W[i], h = H[i], x = cx - w / 2, yTop = yBot - h;
+        s += '<path d="M' + x + ',' + yTop + ' L' + x + ',' + yBot + ' A' + (w / 2) + ',' + ry + ' 0 0 0 ' + (x + w) + ',' + yBot + ' L' + (x + w) + ',' + yTop + ' Z" fill="' + col + '"/>';
+        s += '<path d="M' + x + ',' + yTop + ' L' + x + ',' + yBot + ' A' + (w / 2) + ',' + ry + ' 0 0 0 ' + (x + w) + ',' + yBot + ' L' + (x + w) + ',' + yTop + ' Z" fill="url(#cdShade)"/>';
+        s += '<ellipse cx="' + cx + '" cy="' + yTop + '" rx="' + (w / 2) + '" ry="' + ry + '" fill="' + light + '"/>';
+        if (CD.drip) {
+          s += '<path d="M' + x + ',' + yTop + ' A' + (w / 2) + ',' + ry + ' 0 0 0 ' + (x + w) + ',' + yTop + ' L' + (x + w) + ',' + (yTop + 9) + ' A' + (w / 2) + ',' + ry + ' 0 0 1 ' + x + ',' + (yTop + 9) + ' Z" fill="' + dripCol + '"/>';
+          var cnt = Math.round(w / 26);
+          for (var k = 0; k < cnt; k++) {
+            var t = -1 + (2 * (k + 0.5)) / cnt, dx = cx + t * (w / 2) * 0.96;
+            var edge = yTop + ry * Math.sqrt(1 - t * t * 0.92);
+            var len = 12 + ((k * 7 + i * 5) % 4) * 6;
+            s += '<rect x="' + (dx - 5) + '" y="' + (edge + 2) + '" width="10" height="' + len + '" rx="5" fill="' + dripCol + '"/>';
+          }
+        }
+        if (CD.pearls) {
+          var np = Math.floor(w / 17);
+          for (var p = 1; p < np; p++) {
+            var tt = -1 + (2 * p) / np, px = cx + tt * (w / 2), py = yBot + ry * Math.sqrt(1 - tt * tt) - 1;
+            s += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="3.6" fill="#E3B34F" stroke="#B98A2E" stroke-width=".6"/><circle cx="' + (px - 1.1).toFixed(1) + '" cy="' + (py - 1.2).toFixed(1) + '" r="1.1" fill="#fff" opacity=".85"/>';
+          }
+        }
+        topY = yTop; topW = w; yBot = yTop;
+      }
+
+      if (CD.leaves) s += sprig(cx + topW / 2 - 12, topY + 2, 38, 50, green);
+      if (CD.bows) s += bow(cx - topW / 2 + 6, topY + 5, ribbon) + bow(cx + topW / 2 - 6, topY + 5, ribbon);
+
+      // topper
+      var text = CD.topper.trim();
+      if (text) {
+        var lines = [text];
+        if (text.length > 15 && text.indexOf(' ') > -1) {
+          var mid = text.length / 2, best = -1, bd = 99;
+          for (var q = 0; q < text.length; q++) if (text[q] === ' ' && Math.abs(q - mid) < bd) { bd = Math.abs(q - mid); best = q; }
+          if (best > 0) lines = [text.slice(0, best), text.slice(best + 1)];
+        }
+        var longest = Math.max.apply(null, lines.map(function (l) { return l.length; }));
+        var fs = Math.max(11, Math.min(24, 230 / (longest * 0.52)));
+        var ty = topY - ry - 2, stick = lines.length > 1 ? 54 : 40;
+        s += '<line x1="' + cx + '" y1="' + ty + '" x2="' + cx + '" y2="' + (ty - stick) + '" stroke="#C9962E" stroke-width="2.4" stroke-linecap="round"/>';
+        lines.forEach(function (l, idx) {
+          var y = ty - stick - 4 + idx * (fs + 3) - (lines.length - 1) * (fs + 3);
+          s += '<text x="' + cx + '" y="' + y.toFixed(1) + '" text-anchor="middle" font-family="Courgette, \'Brush Script MT\', cursive" font-size="' + fs.toFixed(1) + '" fill="#C9962E" stroke="#fff" stroke-width="3" paint-order="stroke" stroke-linejoin="round">' + esc(l) + '</text>';
+        });
+      }
+      cdSvg.innerHTML = s;
+      cdSvg.setAttribute('aria-label', 'Preview: ' + n + ' tier ' + COLORS[CD.ci].name.toLowerCase() + ' cake' + (text ? ' with the topper "' + text + '"' : ''));
+      $('cdColorName').textContent = COLORS[CD.ci].name;
+    }
+
+    // controls
+    var swWrap = $('cdColors');
+    COLORS.forEach(function (c, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'swatch'; b.style.background = c.hex;
+      b.setAttribute('aria-label', c.name); b.title = c.name;
+      b.setAttribute('aria-pressed', i === CD.ci ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        CD.ci = i;
+        Array.prototype.forEach.call(swWrap.children, function (el, j) { el.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+        renderCake();
+      });
+      swWrap.appendChild(b);
+    });
+    var tierBtns = $('cdTiers').querySelectorAll('button');
+    Array.prototype.forEach.call(tierBtns, function (b) {
+      b.addEventListener('click', function () {
+        CD.tiers = parseInt(b.getAttribute('data-tiers'), 10);
+        Array.prototype.forEach.call(tierBtns, function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+        renderCake();
+      });
+    });
+    [['cdBows', 'bows'], ['cdPearls', 'pearls'], ['cdDrip', 'drip'], ['cdLeaves', 'leaves']].forEach(function (pair) {
+      $(pair[0]).addEventListener('change', function (e) { CD[pair[1]] = e.target.checked; renderCake(); });
+    });
+    $('cdTopper').addEventListener('input', function (e) { CD.topper = e.target.value; renderCake(); });
+    renderCake();
+
+    // turn the sketch into a small picture so it travels with the order
+    function sketchToFile() {
+      return new Promise(function (resolve) {
+        try {
+          var clone = cdSvg.cloneNode(true);
+          clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          clone.setAttribute('width', '600'); clone.setAttribute('height', '680');
+          var xml = new XMLSerializer().serializeToString(clone);
+          var img = new Image();
+          img.onload = function () {
+            try {
+              var c = document.createElement('canvas'); c.width = 600; c.height = 680;
+              var g = c.getContext('2d'); g.fillStyle = '#FFFAF6'; g.fillRect(0, 0, 600, 680);
+              g.drawImage(img, 0, 0, 600, 680);
+              c.toBlob(function (b) {
+                if (!b) return resolve(null);
+                try { resolve(new File([b], 'my-cake-design.jpg', { type: 'image/jpeg' })); } catch (e) { resolve(null); }
+              }, 'image/jpeg', 0.9);
+            } catch (e) { resolve(null); }
+          };
+          img.onerror = function () { resolve(null); };
+          img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+        } catch (e) { resolve(null); }
+      });
+    }
+
+    var sketchEntry = null;
+    $('cdUse').addEventListener('click', function () {
+      var extras = [];
+      if (CD.bows) extras.push('ribbon bows');
+      if (CD.pearls) extras.push('gold pearls');
+      if (CD.drip) extras.push('chocolate drip');
+      if (CD.leaves) extras.push('leaves and greenery');
+      var topper = CD.topper.trim();
+      var line = 'Cake designer idea: ' + CD.tiers + ' tier cake in ' + COLORS[CD.ci].name.toLowerCase() +
+        (extras.length ? ', with ' + extras.join(', ') : ', no extras') +
+        (topper ? ', topper says "' + topper + '"' : '') + '.';
+
+      var d = $('f-details');
+      var already = d.value.indexOf('Cake designer idea:') > -1;
+      d.value = already ? d.value.replace(/Cake designer idea:[^\n]*/, line) : (d.value.trim() ? d.value.trim() + '\n' + line : line);
+      $('f-type').value = CD.tiers + ' tier cake';
+
+      sketchToFile().then(function (file) {
+        if (sketchEntry) {
+          var at = photos.indexOf(sketchEntry);
+          if (at > -1) { URL.revokeObjectURL(sketchEntry.url); photos.splice(at, 1); }
+          sketchEntry = null;
+        }
+        if (file && photos.length < MAX_PHOTOS) sketchEntry = pushPhoto(file);
+        renderThumbs();
+        $('cdDone').hidden = false;
+        $('order').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  }
 
   /* ---------- Order form: send ---------- */
   var dateInput = $('f-date');
