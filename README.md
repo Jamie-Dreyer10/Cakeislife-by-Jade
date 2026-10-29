@@ -2,24 +2,19 @@
 
 Static website in plain HTML, CSS and JavaScript. No build step needed.
 
-## Folder layout
+All files sit together in one place (no folders):
 
-```
-index.html        <- main page
-catalogue.html    <- full photo catalogue
-css/style.css
-js/config.js      <- contact details live here
-js/main.js
-images/           <- logo, favicon and cake photos
-README.md
-```
+- index.html       main page
+- catalogue.html   full photo catalogue
+- style.css        colours and layout
+- config.js        contact details (WhatsApp, email, Facebook, Instagram)
+- main.js          page behaviour (gallery, order form)
+- logo.png, favicon.png and the cake photos (.jpg)
 
-## Contact details
-
-Open `js/config.js` to change the WhatsApp number, phone display, area, Facebook, Instagram or email.
+To change contact details, edit config.js.
 
 ## Cloudflare settings
 
 - Framework preset: None
 - Build command: (leave empty)
-- Build output directory: `/`
+- Build output directory: /
