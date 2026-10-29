@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cake Catalogue | Cake is Life by Jade</title>
+  <meta name="description" content="Browse the full catalogue of handmade cakes, bento boxes and cupcakes by Jade of Cake is Life, Brackenfell, serving the whole Western Cape.">
+  <meta name="theme-color" content="#F27BB0">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="apple-touch-icon" href="images/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courgette&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="sprig" viewBox="0 0 100 200">
+      <path d="M50 198 C 48 140 56 70 50 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <path fill="currentColor" d="M50 150 C 22 146 8 124 10 104 C 36 106 52 126 50 150Z"/>
+      <path fill="currentColor" d="M50 120 C 78 116 92 94 90 74 C 64 76 48 96 50 120Z"/>
+      <path fill="currentColor" d="M50 92 C 24 88 12 68 14 50 C 38 52 52 70 50 92Z"/>
+      <path fill="currentColor" d="M51 64 C 76 60 88 42 86 26 C 64 28 50 44 51 64Z"/>
+      <path fill="currentColor" d="M50 30 C 42 20 44 10 50 4 C 58 12 58 22 50 30Z"/>
+    </symbol>
+  </svg>
+
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html" aria-label="Cake is Life by Jade - home">
+        <img src="images/logo.png" alt="" width="52" height="52">
+        <span class="brand-text">Cake is Life</span>
+      </a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="nav" class="nav" aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="index.html#cakes">What I Bake</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#how">How to Order</a>
+        <a href="index.html#order" class="btn btn-small">Order a Cake</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-head">
+      <svg class="sprig sprig-a" aria-hidden="true"><use href="#sprig"/></svg>
+      <svg class="sprig sprig-b" aria-hidden="true"><use href="#sprig"/></svg>
+      <div class="wrap">
+        <p class="eyebrow">Full catalogue</p>
+        <h1 class="section-title">Cakes I've <span class="script">made with love</span></h1>
+        <p class="section-sub">Browse for ideas. Tap any photo to see it bigger, then tell me you'd like something similar.</p>
+      </div>
+    </section>
+
+    <section class="section catalogue">
+      <div class="wrap">
+        <div class="filters" role="group" aria-label="Filter cakes">
+          <button class="chip is-active" data-filter="all">All</button>
+          <button class="chip" data-filter="birthday">Birthdays</button>
+          <button class="chip" data-filter="kids">Kids</button>
+          <button class="chip" data-filter="weddings">Weddings &amp; Baptisms</button>
+          <button class="chip" data-filter="boxes">Cupcakes &amp; Boxes</button>
+          <button class="chip" data-filter="milestone">Milestones</button>
+        </div>
+
+        <div class="gallery" id="galleryGrid">
+          <figure class="g-item" data-cat="birthday" data-title="pink vintage ruffle cake">
+            <button class="g-btn" aria-label="View larger: pink vintage-style birthday cake">
+              <img src="images/cake-pink-vintage.jpg" alt="Pink vintage-style birthday cake with piped ruffles, gold pearls and satin bows" loading="lazy" width="750" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="birthday milestone" data-title="tyre themed 21st birthday cake">
+            <button class="g-btn" aria-label="View larger: 21st birthday tyre cake">
+              <img src="images/cake-21st-tyre.jpg" alt="21st birthday cake designed like a tyre with silver mirror wrench, gears and a car topper" loading="lazy" width="750" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="milestone" data-title="black and gold matric cake">
+            <button class="g-btn" aria-label="View larger: black and gold matric cake">
+              <img src="images/cake-matric-gold.jpg" alt="Two-tier black and gold matric cake with a graduation cap topper and gold and black spheres" loading="lazy" width="750" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="weddings" data-title="pink baptism cake">
+            <button class="g-btn" aria-label="View larger: baptism cake with pink cross">
+              <img src="images/cake-baptism-pink.jpg" alt="White baptism cake with a pink cross, pink blossoms and gold pearls" loading="lazy" width="600" height="800">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="kids" data-title="K-pop themed cake">
+            <button class="g-btn" aria-label="View larger: K-pop themed cake">
+              <img src="images/cake-kpop.jpg" alt="Blue, lilac and pink K-pop themed birthday cake with edible toppers" loading="lazy" width="750" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="boxes" data-title="berry rose cupcakes">
+            <button class="g-btn" aria-label="View larger: berry cupcakes">
+              <img src="images/cupcakes-berry.jpg" alt="Box of cupcakes with deep berry-pink buttercream roses and heart sprinkles" loading="lazy" width="1000" height="750">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="birthday" data-title="red bow cake">
+            <button class="g-btn" aria-label="View larger: red birthday cake with white bows">
+              <img src="images/cake-red-bows.jpg" alt="Deep red birthday cake with white heart dots, ruffle border and white satin bows" loading="lazy" width="829" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="kids" data-title="safari themed cake">
+            <button class="g-btn" aria-label="View larger: safari themed cake">
+              <img src="images/cake-safari.jpg" alt="Safari themed 4th birthday cake with a lion, giraffe, elephant and a wooden topper" loading="lazy" width="750" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="birthday milestone" data-title="Hello 30 black bow cake">
+            <button class="g-btn" aria-label="View larger: Hello 30 cake">
+              <img src="images/cake-hello30.jpg" alt="White 30th birthday cake with black hearts, piped writing and black ribbon bows" loading="lazy" width="750" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="kids" data-title="dinosaur cake">
+            <button class="g-btn" aria-label="View larger: dinosaur cake">
+              <img src="images/cake-dino.jpg" alt="Blue dinosaur themed 2nd birthday cake with grass piping, clouds and edible dinosaurs" loading="lazy" width="750" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="weddings" data-title="wedding cake">
+            <button class="g-btn" aria-label="View larger: wedding cake moment">
+              <img src="images/wedding-cake-cutting.jpg" alt="Bride and groom laughing together at their cake cutting, with a green and white initials wedding cake behind them" loading="lazy" width="666" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="boxes birthday" data-title="bento cake and cupcake box">
+            <button class="g-btn" aria-label="View larger: pink bento cake with cupcakes">
+              <img src="images/cake-bento-31.jpg" alt="Pink and white bento cake with a gold Happy Birthday topper and matching crown cupcakes in a box" loading="lazy" width="980" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="birthday milestone" data-title="red football 60th birthday cake">
+            <button class="g-btn" aria-label="View larger: 60th birthday football cake">
+              <img src="images/cake-soccer-red.jpg" alt="Red and cream 60th birthday football cake with gold acrylic number, name and gold spheres" loading="lazy" width="803" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="weddings kids" data-title="blue bow cake">
+            <button class="g-btn" aria-label="View larger: blue ribbon cake">
+              <img src="images/cake-blue-bows.jpg" alt="White cake with piped shell border, silver pearls and pale blue ribbon bows" loading="lazy" width="600" height="800">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="kids" data-title="blue football cake">
+            <button class="g-btn" aria-label="View larger: football cake">
+              <img src="images/cake-soccer-blue.jpg" alt="Blue football themed 4th birthday cake with footballs, blue and black spheres and a name topper" loading="lazy" width="750" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="boxes birthday" data-title="black bento cake with photo prints">
+            <button class="g-btn" aria-label="View larger: black bento cake with photo prints">
+              <img src="images/cake-black-photos.jpg" alt="Black bento cake with gold lettering and edible photo prints, plus two matching photo cupcakes" loading="lazy" width="848" height="647">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="kids" data-title="yellow character cake">
+            <button class="g-btn" aria-label="View larger: yellow character cake">
+              <img src="images/cake-yellow-kids.jpg" alt="Bright yellow character-themed 1st birthday cake with edible face and sponge holes" loading="lazy" width="750" height="1000">
+            </button>
+          </figure>
+          <figure class="g-item" data-cat="boxes birthday" data-title="Loading please wait cake">
+            <button class="g-btn" aria-label="View larger: Loading please wait cake">
+              <img src="images/cake-loading.jpg" alt="Funny white birthday cake with sprinkles and a Loading Please Wait message" loading="lazy" width="984" height="1000">
+            </button>
+          </figure>
+        </div>
+
+        <div class="center-cta">
+          <p class="gallery-cta">See something you love? I'd be happy to make something similar, designed just for you.</p>
+          <a class="btn" href="index.html#order">Order your cake</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <img src="images/logo.png" alt="" width="64" height="64">
+      <p class="script footer-brand">Cake is Life by Jade</p>
+      <p>Handmade with love in Brackenfell &middot; Serving the whole Western Cape &middot; Est. 2020</p>
+      <p><a id="footWa" href="#" target="_blank" rel="noopener">Message me on WhatsApp</a> &middot; <a href="index.html">Back to home</a></p>
+      <p class="copy">&copy; <span id="year"></span> Cake is Life by Jade. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <a class="wa-float" id="waFloat" href="#" aria-label="Chat on WhatsApp" target="_blank" rel="noopener">
+    <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path fill="currentColor" d="M16.04 3C9.4 3 4 8.4 4 15.04c0 2.12.55 4.19 1.6 6.01L4 29l8.12-1.57a12.03 12.03 0 0 0 3.92.66h.01C22.7 28.09 28.1 22.69 28.1 16.05 28.1 9.4 22.69 3 16.04 3Zm0 22.03h-.01c-1.19 0-2.36-.32-3.38-.92l-.24-.14-4.82.93.96-4.7-.16-.25a9.9 9.9 0 0 1-1.52-5.3c0-5.5 4.47-9.97 9.98-9.97 2.66 0 5.16 1.04 7.04 2.92a9.9 9.9 0 0 1 2.92 7.05c0 5.5-4.48 9.38-9.77 9.38Zm5.47-7.47c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.23 1.36.2 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35Z"/></svg>
+  </a>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Cake photo viewer" hidden>
+    <button class="lb-close" aria-label="Close">&times;</button>
+    <button class="lb-nav lb-prev" aria-label="Previous photo">&#8249;</button>
+    <figure class="lb-fig">
+      <img id="lbImg" src="" alt="">
+      <a class="btn btn-small lb-order" id="lbOrder" href="index.html#order">I'd like something like this</a>
+    </figure>
+    <button class="lb-nav lb-next" aria-label="Next photo">&#8250;</button>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
