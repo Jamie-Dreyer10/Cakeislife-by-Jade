@@ -7,10 +7,10 @@
 window.SITE = {
   // WhatsApp number in international format: country code + number,
   // NO plus sign, NO spaces, NO leading zero.
-  whatsapp: "27744016644",
+  whatsapp: "27658941650",
 
   // Shown on the page (any format you like)
-  phoneDisplay: "+27 74 401 6644",
+  phoneDisplay: "+27 65 894 1650",
 
   // Leave as "" to hide the button. Paste the full page link between the quotes.
   facebook: "https://www.facebook.com/share/1CcfBVz1Gn/",
