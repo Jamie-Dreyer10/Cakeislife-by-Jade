@@ -557,7 +557,7 @@
   function sendEmail(fd) {
     if (!emailEndpoint || !window.fetch) return Promise.resolve(false);
     var ctl = window.AbortController ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 20000);
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 8000);
     return fetch(emailEndpoint, { method: 'POST', body: fd, mode: 'no-cors', signal: ctl ? ctl.signal : undefined })
       .then(function () { clearTimeout(timer); return true; })
       .catch(function () { clearTimeout(timer); return false; });
@@ -580,7 +580,6 @@
       showError('The WhatsApp number has not been set up yet. Please add it in config.js.');
       return;
     }
-    if (v('f-honey')) return; // a robot filled the hidden box, so ignore it
 
     var nice = date;
     try {
@@ -596,6 +595,7 @@
     fd.append('_subject', 'New cake order from ' + name + ' (' + occasion + ', ' + nice + ')');
     fd.append('_template', 'table');
     fd.append('_captcha', 'false');
+    fd.append('_honey', '');
     fd.append('Name', name);
     fd.append('Occasion', occasion);
     fd.append('Date needed', nice);
@@ -612,7 +612,7 @@
     try { waWin = window.open('', '_blank'); } catch (err) { waWin = null; }
 
     sendBtn.disabled = true;
-    sendBtn.textContent = 'Sending your order...';
+    sendBtn.textContent = 'Sending your order, one moment...';
 
     sendEmail(fd).then(function (emailed) {
       var lines = [
