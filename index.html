@@ -181,8 +181,8 @@
         <div class="cards">
           <article class="card">
             <span class="card-icon" aria-hidden="true">&#127874;</span>
-            <h3>1 to 3 tier cakes</h3>
-            <p>From a single-tier celebration cake to a stunning three-tier showstopper, for birthdays, weddings, baptisms and big milestones.</p>
+            <h3>1 and 2 tier cakes</h3>
+            <p>From a single-tier celebration cake to a stunning two-tier showstopper, for birthdays, weddings, baptisms and big milestones.</p>
           </article>
           <article class="card">
             <span class="card-icon" aria-hidden="true">&#127856;</span>
@@ -212,7 +212,7 @@
     <section class="section" id="designer">
       <div class="wrap">
         <h2 class="section-title">Design your <span class="script">dream cake</span></h2>
-        <p class="section-sub">Play with tiers, colours and little extras, then send your sketch straight to Jade. She'll bring it to life and make it even better.</p>
+        <p class="section-sub">Play with the size, flavour, colours and little extras, then send your sketch straight to Jade. She'll bring it to life and make it even better.</p>
 
         <div class="designer">
           <div class="designer-preview">
@@ -222,17 +222,39 @@
 
           <div class="designer-controls">
             <fieldset class="cd-group">
-              <legend>How many tiers?</legend>
+              <legend>What size?</legend>
               <div class="seg" id="cdTiers">
+                <button type="button" data-tiers="0" aria-pressed="false">Bento</button>
                 <button type="button" data-tiers="1" aria-pressed="false">1 tier</button>
                 <button type="button" data-tiers="2" aria-pressed="true">2 tiers</button>
-                <button type="button" data-tiers="3" aria-pressed="false">3 tiers</button>
+              </div>
+            </fieldset>
+
+            <fieldset class="cd-group">
+              <legend>Flavour</legend>
+              <div class="seg seg-wrap" id="cdFlavours">
+                <button type="button" data-flavour="Chocolate" aria-pressed="false">Chocolate</button>
+                <button type="button" data-flavour="Vanilla" aria-pressed="true">Vanilla</button>
+                <button type="button" data-flavour="Red velvet" aria-pressed="false">Red velvet</button>
+                <button type="button" data-flavour="Carrot cake" aria-pressed="false">Carrot cake</button>
               </div>
             </fieldset>
 
             <fieldset class="cd-group">
               <legend>Cake colour: <span id="cdColorName"></span></legend>
               <div class="swatches" id="cdColors"></div>
+              <p class="cd-sub">Or mix any colour you like:</p>
+              <div class="wheel-row">
+                <div class="wheel" id="cdWheel" tabindex="0" role="application" aria-label="Colour wheel. Use the arrow keys to change the colour.">
+                  <div class="wheel-disc" id="cdWheelDisc"></div>
+                  <div class="wheel-dot" id="cdWheelDot"></div>
+                </div>
+                <div class="wheel-side">
+                  <label for="cdBright">Lighter or darker</label>
+                  <input type="range" id="cdBright" min="25" max="100" value="100">
+                  <span class="wheel-chip" id="cdChip" aria-hidden="true"></span>
+                </div>
+              </div>
             </fieldset>
 
             <fieldset class="cd-group">
@@ -308,7 +330,7 @@
       <div class="wrap order">
         <div class="order-info">
           <h2 class="section-title left">Order your <span class="script">cake</span></h2>
-          <p>Fill in the details and tap the button. Your message opens in WhatsApp, ready to send to me. Then I'll chat to you about the design and pricing.</p>
+          <p>Fill in the details and tap the button. Your order, with any photos, comes straight to my email, and your message opens in WhatsApp so we can chat about the design and pricing.</p>
           <ul class="contact-list">
             <li><strong>WhatsApp:</strong> <a id="waLink" href="#" target="_blank" rel="noopener"></a></li>
             <li id="emailRow" hidden><strong>Email:</strong> <a id="emailLink" href="#"></a></li>
@@ -320,6 +342,7 @@
         </div>
 
         <form class="form" id="orderForm" novalidate>
+          <input type="text" id="f-honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
           <div class="field">
             <label for="f-name">Your name</label>
             <input id="f-name" name="name" type="text" autocomplete="name" required>
@@ -346,12 +369,22 @@
             <label for="f-type">What would you like?</label>
             <select id="f-type" name="type" required>
               <option value="">Choose one</option>
+              <option>Bento cake</option>
               <option>1 tier cake</option>
               <option>2 tier cake</option>
-              <option>3 tier cake</option>
-              <option>Bento cake</option>
               <option>Bento box (with cupcakes)</option>
               <option>Cupcakes</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-flavour">Flavour</label>
+            <select id="f-flavour" name="flavour">
+              <option value="">Choose one</option>
+              <option>Chocolate</option>
+              <option>Vanilla</option>
+              <option>Red velvet</option>
+              <option>Carrot cake</option>
               <option>Not sure yet</option>
             </select>
           </div>
@@ -372,7 +405,7 @@
           <p class="hint">If you'd like delivery, the delivery cost depends on your area and is included in your quote.</p>
           <div class="field">
             <label for="f-details">Tell me about your cake</label>
-            <textarea id="f-details" name="details" rows="5" placeholder="Theme, colours, flavours, name and age for the topper, allergies..." required></textarea>
+            <textarea id="f-details" name="details" rows="5" placeholder="Theme, colours, name and age for the topper, allergies..." required></textarea>
           </div>
           <div class="field">
             <label for="f-link">Link to a design you like (optional)</label>
@@ -392,12 +425,13 @@
           </div>
 
           <p class="form-error" id="formError" role="alert" hidden></p>
-          <button class="btn btn-wa" type="submit">Send on WhatsApp</button>
-          <p class="fine">Your message opens in WhatsApp. If you added photos, you'll get one more quick step to send them.</p>
+          <button class="btn btn-wa" type="submit" id="sendBtn">Send my order</button>
+          <p class="fine" id="sendNote">Your order and photos go to Jade by email, and then WhatsApp opens with your message ready to send. Tap send in WhatsApp to finish.</p>
+          <p class="sent-ok" id="sentOk" role="status" hidden>Your order has been emailed to Jade. Now tap send in WhatsApp so she can reply to you.</p>
 
           <div class="photo-step" id="photoStep" hidden>
             <h3>Last step: send your photos</h3>
-            <p id="photoStepText">Your message is ready in WhatsApp. Now send your photos to Jade in the same chat.</p>
+            <p id="photoStepText">We could not email your photos just now. Please send them to Jade in the same WhatsApp chat.</p>
             <button type="button" class="btn" id="sharePhotos">Send my photos</button>
             <a class="btn btn-ghost" id="reopenChat" href="#" target="_blank" rel="noopener">Open chat with Jade</a>
             <p class="fine" id="photoFallback" hidden>If the button doesn't open WhatsApp: open your chat with Jade, tap the + or paperclip, choose Gallery or Photos, and pick the same photos.</p>

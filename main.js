@@ -244,12 +244,13 @@
       { name: 'Ivory', hex: '#FBF6EE' },
       { name: 'Black', hex: '#34303A' }
     ];
+    // 0 = bento, 1 = one tier, 2 = two tiers
     var GEO = {
+      0: { w: [178], h: [96] },
       1: { w: [190], h: [130] },
-      2: { w: [210, 146], h: [84, 76] },
-      3: { w: [230, 170, 114], h: [66, 60, 54] }
+      2: { w: [210, 146], h: [84, 76] }
     };
-    var CD = { tiers: 2, ci: 0, bows: true, pearls: true, drip: false, leaves: true, topper: 'Happy Birthday' };
+    var CD = { tiers: 2, hex: COLORS[0].hex, cname: COLORS[0].name, custom: false, flavour: 'Vanilla', bows: true, pearls: true, drip: false, leaves: true, topper: 'Happy Birthday' };
 
     var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
     var rgb = function (hex) { var n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
@@ -257,6 +258,43 @@
       var c = rgb(hex), t = toWhite ? 255 : 0;
       return 'rgb(' + c.map(function (v) { return Math.round(v + (t - v) * amt); }).join(',') + ')';
     };
+    var toHex = function (r, g, b) { return '#' + [r, g, b].map(function (v) { return ('0' + Math.round(v).toString(16)).slice(-2); }).join('').toUpperCase(); };
+    function hsvToHex(h, s, v) {
+      var c = v * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = v - c, r = 0, g = 0, b = 0;
+      if (h < 60) { r = c; g = x; } else if (h < 120) { r = x; g = c; } else if (h < 180) { g = c; b = x; }
+      else if (h < 240) { g = x; b = c; } else if (h < 300) { r = x; b = c; } else { r = c; b = x; }
+      return toHex((r + m) * 255, (g + m) * 255, (b + m) * 255);
+    }
+    function hexToHsv(hex) {
+      var c = rgb(hex).map(function (v) { return v / 255; }), mx = Math.max(c[0], c[1], c[2]), mn = Math.min(c[0], c[1], c[2]), d = mx - mn, h = 0;
+      if (d) {
+        if (mx === c[0]) h = ((c[1] - c[2]) / d) % 6; else if (mx === c[1]) h = (c[2] - c[0]) / d + 2; else h = (c[0] - c[1]) / d + 4;
+        h *= 60; if (h < 0) h += 360;
+      }
+      return { h: h, s: mx ? d / mx : 0, v: mx };
+    }
+    // give a picked colour a friendly name, e.g. "deep teal"
+    function describeColor(hex) {
+      var c = rgb(hex).map(function (v) { return v / 255; }), mx = Math.max(c[0], c[1], c[2]), mn = Math.min(c[0], c[1], c[2]);
+      var l = (mx + mn) / 2, d = mx - mn, sat = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+      var h = hexToHsv(hex).h;
+      if (l < 0.12) return 'black';
+      if (l > 0.94) return 'white';
+      if (sat < 0.12) return l < 0.35 ? 'charcoal' : l > 0.8 ? 'light grey' : 'grey';
+      var name;
+      if (h < 15 || h >= 345) name = l > 0.72 ? 'pink' : 'red';
+      else if (h < 40) name = l < 0.42 ? 'brown' : 'orange';
+      else if (h < 65) name = 'yellow';
+      else if (h < 95) name = 'lime green';
+      else if (h < 165) name = 'green';
+      else if (h < 195) name = 'teal';
+      else if (h < 255) name = 'blue';
+      else if (h < 290) name = 'purple';
+      else name = 'pink';
+      var pre = '';
+      if (name !== 'pink' || l < 0.72) { if (l > 0.8) pre = 'pale '; else if (l > 0.64) pre = 'light '; else if (l < 0.28) pre = 'dark '; else if (l < 0.4 && name !== 'brown') pre = 'deep '; }
+      return pre + name;
+    }
     var lum = function (hex) { var c = rgb(hex); return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255; };
 
     function bow(x, y, colour) {
@@ -272,7 +310,8 @@
 
     function renderCake() {
       var n = CD.tiers, W = GEO[n].w, H = GEO[n].h, cx = 150, base = 300, ry = 10;
-      var col = COLORS[CD.ci].hex, light = mix(col, true, .3);
+      var bento = n === 0, count = bento ? 1 : n;
+      var col = CD.hex, light = mix(col, true, .3);
       var dark = lum(col) < 0.35, pale = lum(col) > 0.82;
       var dripCol = dark ? '#D9A441' : '#6B4332';
       var ribbon = pale ? '#EC5C9C' : '#FFFFFF';
@@ -284,17 +323,25 @@
         '<path fill="currentColor" d="M50 92 C 24 88 12 68 14 50 C 38 52 52 70 50 92Z"/><path fill="currentColor" d="M51 64 C 76 60 88 42 86 26 C 64 28 50 44 51 64Z"/>' +
         '<path fill="currentColor" d="M50 30 C 42 20 44 10 50 4 C 58 12 58 22 50 30Z"/></symbol></defs>';
 
-      // plate
-      s += '<ellipse cx="150" cy="' + (base + 24) + '" rx="' + (pr + 8) + '" ry="12" fill="#2A2233" opacity=".08"/>' +
-        '<ellipse cx="150" cy="' + (base + 10) + '" rx="' + pr + '" ry="15" fill="#E7DDE3"/>' +
-        '<ellipse cx="150" cy="' + (base + 4) + '" rx="' + pr + '" ry="15" fill="#fff" stroke="#EFE3EA"/>';
-
-      if (CD.leaves) {
-        s += sprig(cx - W[0] / 2 + 4, base + 6, -52, 62, green) + sprig(cx + W[0] / 2 - 4, base + 6, 52, 62, green);
+      var bw = W[0] + 40, bx = cx - bw / 2;
+      if (bento) {
+        // a little kraft bento box (back of the box first)
+        s += '<ellipse cx="150" cy="' + (base + 30) + '" rx="' + (bw / 2 + 8) + '" ry="10" fill="#2A2233" opacity=".08"/>' +
+          '<ellipse cx="150" cy="' + (base - 2) + '" rx="' + (bw / 2) + '" ry="16" fill="#C4A271"/>';
+      } else {
+        // plate
+        s += '<ellipse cx="150" cy="' + (base + 24) + '" rx="' + (pr + 8) + '" ry="12" fill="#2A2233" opacity=".08"/>' +
+          '<ellipse cx="150" cy="' + (base + 10) + '" rx="' + pr + '" ry="15" fill="#E7DDE3"/>' +
+          '<ellipse cx="150" cy="' + (base + 4) + '" rx="' + pr + '" ry="15" fill="#fff" stroke="#EFE3EA"/>';
       }
 
-      var yBot = base, topY = base, topW = W[0];
-      for (var i = 0; i < n; i++) {
+      if (CD.leaves) {
+        var lx = bento ? bw / 2 - 8 : W[0] / 2 - 4;
+        s += sprig(cx - lx, base + 6, -52, 62, green) + sprig(cx + lx, base + 6, 52, 62, green);
+      }
+
+      var yBot = bento ? base - 4 : base, topY = yBot, topW = W[0];
+      for (var i = 0; i < count; i++) {
         var w = W[i], h = H[i], x = cx - w / 2, yTop = yBot - h;
         s += '<path d="M' + x + ',' + yTop + ' L' + x + ',' + yBot + ' A' + (w / 2) + ',' + ry + ' 0 0 0 ' + (x + w) + ',' + yBot + ' L' + (x + w) + ',' + yTop + ' Z" fill="' + col + '"/>';
         s += '<path d="M' + x + ',' + yTop + ' L' + x + ',' + yBot + ' A' + (w / 2) + ',' + ry + ' 0 0 0 ' + (x + w) + ',' + yBot + ' L' + (x + w) + ',' + yTop + ' Z" fill="url(#cdShade)"/>';
@@ -312,13 +359,18 @@
         if (CD.pearls) {
           var np = Math.floor(w / 17);
           for (var p = 1; p < np; p++) {
-            var tt = -1 + (2 * p) / np, px = cx + tt * (w / 2), py = yBot + ry * Math.sqrt(1 - tt * tt) - 1;
+            var tt = -1 + (2 * p) / np, px = cx + tt * (w / 2), py = (bento ? yTop : yBot) + ry * Math.sqrt(1 - tt * tt) - 1;
             s += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="3.6" fill="#E3B34F" stroke="#B98A2E" stroke-width=".6"/><circle cx="' + (px - 1.1).toFixed(1) + '" cy="' + (py - 1.2).toFixed(1) + '" r="1.1" fill="#fff" opacity=".85"/>';
           }
         }
         topY = yTop; topW = w; yBot = yTop;
       }
 
+      if (bento) {
+        // front wall of the box, drawn over the bottom of the cake
+        s += '<path d="M' + bx + ',' + (base - 2) + ' A' + (bw / 2) + ',16 0 0 0 ' + (bx + bw) + ',' + (base - 2) + ' L' + (bx + bw - 12) + ',' + (base + 30) + ' L' + (bx + 12) + ',' + (base + 30) + ' Z" fill="#D9B98A"/>' +
+          '<path d="M' + bx + ',' + (base - 2) + ' A' + (bw / 2) + ',16 0 0 0 ' + (bx + bw) + ',' + (base - 2) + '" fill="none" stroke="#B9935C" stroke-width="2.5"/>';
+      }
       if (CD.leaves) s += sprig(cx + topW / 2 - 12, topY + 2, 38, 50, green);
       if (CD.bows) s += bow(cx - topW / 2 + 6, topY + 5, ribbon) + bow(cx + topW / 2 - 6, topY + 5, ribbon);
 
@@ -333,7 +385,7 @@
         }
         var longest = Math.max.apply(null, lines.map(function (l) { return l.length; }));
         var fs = Math.max(11, Math.min(24, 230 / (longest * 0.52)));
-        var ty = topY - ry - 2, stick = lines.length > 1 ? 54 : 40;
+        var ty = topY - ry - 2, stick = lines.length > 1 ? (bento ? 44 : 54) : (bento ? 32 : 40);
         s += '<line x1="' + cx + '" y1="' + ty + '" x2="' + cx + '" y2="' + (ty - stick) + '" stroke="#C9962E" stroke-width="2.4" stroke-linecap="round"/>';
         lines.forEach(function (l, idx) {
           var y = ty - stick - 4 + idx * (fs + 3) - (lines.length - 1) * (fs + 3);
@@ -341,29 +393,84 @@
         });
       }
       cdSvg.innerHTML = s;
-      cdSvg.setAttribute('aria-label', 'Preview: ' + n + ' tier ' + COLORS[CD.ci].name.toLowerCase() + ' cake' + (text ? ' with the topper "' + text + '"' : ''));
-      $('cdColorName').textContent = COLORS[CD.ci].name;
+      cdSvg.setAttribute('aria-label', 'Preview: ' + (bento ? 'bento' : n + ' tier') + ' ' + CD.flavour.toLowerCase() + ' cake in ' + CD.cname.toLowerCase() + (text ? ' with the topper "' + text + '"' : ''));
+      $('cdColorName').textContent = CD.cname;
     }
 
     // controls
     var swWrap = $('cdColors');
+    var HSV = hexToHsv(CD.hex);
+    var wheel = $('cdWheel'), wheelDot = $('cdWheelDot'), wheelDisc = $('cdWheelDisc'), bright = $('cdBright'), chip = $('cdChip');
+
+    function syncWheel() {
+      var a = HSV.h * Math.PI / 180;
+      wheelDot.style.left = (50 + 50 * HSV.s * Math.sin(a)) + '%';
+      wheelDot.style.top = (50 - 50 * HSV.s * Math.cos(a)) + '%';
+      wheelDisc.style.filter = 'brightness(' + HSV.v + ')';
+      bright.value = Math.round(HSV.v * 100);
+      chip.style.background = CD.hex;
+    }
+    function setPressed(idx) {
+      Array.prototype.forEach.call(swWrap.children, function (el, j) { el.setAttribute('aria-pressed', j === idx ? 'true' : 'false'); });
+    }
+    function fromWheel() {
+      CD.hex = hsvToHex(HSV.h, HSV.s, HSV.v);
+      CD.cname = describeColor(CD.hex); CD.custom = true;
+      setPressed(-1); syncWheel(); renderCake();
+    }
+
     COLORS.forEach(function (c, i) {
       var b = document.createElement('button');
       b.type = 'button'; b.className = 'swatch'; b.style.background = c.hex;
       b.setAttribute('aria-label', c.name); b.title = c.name;
-      b.setAttribute('aria-pressed', i === CD.ci ? 'true' : 'false');
+      b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
       b.addEventListener('click', function () {
-        CD.ci = i;
-        Array.prototype.forEach.call(swWrap.children, function (el, j) { el.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
-        renderCake();
+        CD.hex = c.hex; CD.cname = c.name; CD.custom = false;
+        HSV = hexToHsv(c.hex);
+        setPressed(i); syncWheel(); renderCake();
       });
       swWrap.appendChild(b);
     });
+
+    var dragging = false;
+    function pointerToHsv(e) {
+      var r = wheel.getBoundingClientRect(), rad = r.width / 2;
+      var dx = e.clientX - (r.left + rad), dy = e.clientY - (r.top + rad);
+      var ang = Math.atan2(dx, -dy) * 180 / Math.PI; if (ang < 0) ang += 360;
+      HSV.h = ang; HSV.s = Math.min(1, Math.hypot(dx, dy) / rad);
+      fromWheel();
+    }
+    wheel.addEventListener('pointerdown', function (e) {
+      dragging = true; try { wheel.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      pointerToHsv(e); e.preventDefault();
+    });
+    wheel.addEventListener('pointermove', function (e) { if (dragging) pointerToHsv(e); });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { wheel.addEventListener(ev, function () { dragging = false; }); });
+    wheel.addEventListener('keydown', function (e) {
+      var k = e.key, used = true;
+      if (k === 'ArrowLeft') HSV.h = (HSV.h + 352) % 360;
+      else if (k === 'ArrowRight') HSV.h = (HSV.h + 8) % 360;
+      else if (k === 'ArrowUp') HSV.s = Math.min(1, HSV.s + 0.08);
+      else if (k === 'ArrowDown') HSV.s = Math.max(0, HSV.s - 0.08);
+      else used = false;
+      if (used) { e.preventDefault(); fromWheel(); }
+    });
+    bright.addEventListener('input', function () { HSV.v = parseInt(bright.value, 10) / 100; fromWheel(); });
+    syncWheel();
+
     var tierBtns = $('cdTiers').querySelectorAll('button');
     Array.prototype.forEach.call(tierBtns, function (b) {
       b.addEventListener('click', function () {
         CD.tiers = parseInt(b.getAttribute('data-tiers'), 10);
         Array.prototype.forEach.call(tierBtns, function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+        renderCake();
+      });
+    });
+    var flavBtns = $('cdFlavours').querySelectorAll('button');
+    Array.prototype.forEach.call(flavBtns, function (b) {
+      b.addEventListener('click', function () {
+        CD.flavour = b.getAttribute('data-flavour');
+        Array.prototype.forEach.call(flavBtns, function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
         renderCake();
       });
     });
@@ -407,14 +514,16 @@
       if (CD.drip) extras.push('chocolate drip');
       if (CD.leaves) extras.push('leaves and greenery');
       var topper = CD.topper.trim();
-      var line = 'Cake designer idea: ' + CD.tiers + ' tier cake in ' + COLORS[CD.ci].name.toLowerCase() +
+      var sizeText = CD.tiers === 0 ? 'bento' : CD.tiers + ' tier';
+      var line = 'Cake designer idea: ' + sizeText + ' ' + CD.flavour.toLowerCase() + ' cake in ' + CD.cname.toLowerCase() + (CD.custom ? ' (colour ' + CD.hex + ')' : '') +
         (extras.length ? ', with ' + extras.join(', ') : ', no extras') +
         (topper ? ', topper says "' + topper + '"' : '') + '.';
 
       var d = $('f-details');
       var already = d.value.indexOf('Cake designer idea:') > -1;
       d.value = already ? d.value.replace(/Cake designer idea:[^\n]*/, line) : (d.value.trim() ? d.value.trim() + '\n' + line : line);
-      $('f-type').value = CD.tiers + ' tier cake';
+      $('f-type').value = CD.tiers === 0 ? 'Bento cake' : CD.tiers + ' tier cake';
+      $('f-flavour').value = CD.flavour;
 
       sketchToFile().then(function (file) {
         if (sketchEntry) {
@@ -439,10 +548,25 @@
 
   var photoStep = $('photoStep');
   var fallback = $('photoFallback');
+  var sendBtn = $('sendBtn');
+  var sentOk = $('sentOk');
+  var emailTo = (S.email || '').trim();
+  var emailEndpoint = emailTo ? 'https://formsubmit.co/' + emailTo : '';
+
+  // Emails the order (and photos) to Jade. Resolves true if it was sent, false if it could not be.
+  function sendEmail(fd) {
+    if (!emailEndpoint || !window.fetch) return Promise.resolve(false);
+    var ctl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 20000);
+    return fetch(emailEndpoint, { method: 'POST', body: fd, mode: 'no-cors', signal: ctl ? ctl.signal : undefined })
+      .then(function () { clearTimeout(timer); return true; })
+      .catch(function () { clearTimeout(timer); return false; });
+  }
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     errBox.hidden = true;
+    sentOk.hidden = true;
 
     var v = function (id) { return ($(id).value || '').trim(); };
     var name = v('f-name'), occasion = v('f-occasion'), date = v('f-date'),
@@ -453,37 +577,78 @@
       return;
     }
     if (!waReady) {
-      showError('The WhatsApp number has not been set up yet. Please add it in js/config.js.');
+      showError('The WhatsApp number has not been set up yet. Please add it in config.js.');
       return;
     }
+    if (v('f-honey')) return; // a robot filled the hidden box, so ignore it
 
     var nice = date;
     try {
       nice = new Date(date + 'T12:00:00').toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     } catch (err) { /* keep raw date */ }
 
-    var lines = [
-      'Hi Jade! I would like to order a cake.',
-      '',
-      'Name: ' + name,
-      'Occasion: ' + occasion,
-      'Date needed: ' + nice,
-      'I would like: ' + type,
-      'My area: ' + (v('f-area') || 'Not given'),
-      'Collect or deliver: ' + v('f-method'),
-      '',
-      'Details: ' + details
-    ];
-    if (v('f-link')) lines.push('', 'Design I like: ' + v('f-link'));
-    if (photos.length) lines.push('', 'I am sending ' + photos.length + ' inspiration photo' + (photos.length > 1 ? 's' : '') + ' next.');
+    var flavour = v('f-flavour') || 'Not given';
+    var area = v('f-area') || 'Not given';
+    var method = v('f-method');
 
-    window.open(waBase + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    // the email (with photos attached)
+    var fd = new FormData();
+    fd.append('_subject', 'New cake order from ' + name + ' (' + occasion + ', ' + nice + ')');
+    fd.append('_template', 'table');
+    fd.append('_captcha', 'false');
+    fd.append('Name', name);
+    fd.append('Occasion', occasion);
+    fd.append('Date needed', nice);
+    fd.append('I would like', type);
+    fd.append('Flavour', flavour);
+    fd.append('Area', area);
+    fd.append('Collect or deliver', method);
+    fd.append('Details', details);
+    if (v('f-link')) fd.append('Design link', v('f-link'));
+    photos.forEach(function (p, i) { fd.append('Photo ' + (i + 1), p.file, p.file.name || ('photo-' + (i + 1) + '.jpg')); });
 
-    if (photos.length && photoStep) {
-      fallback.hidden = true;
-      photoStep.hidden = false;
-      photoStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    // open the WhatsApp tab right now so phones and browsers allow it, then fill it in
+    var waWin = null;
+    try { waWin = window.open('', '_blank'); } catch (err) { waWin = null; }
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending your order...';
+
+    sendEmail(fd).then(function (emailed) {
+      var lines = [
+        'Hi Jade! I would like to order a cake.',
+        '',
+        'Name: ' + name,
+        'Occasion: ' + occasion,
+        'Date needed: ' + nice,
+        'I would like: ' + type,
+        'Flavour: ' + flavour,
+        'My area: ' + area,
+        'Collect or deliver: ' + method,
+        '',
+        'Details: ' + details
+      ];
+      if (v('f-link')) lines.push('', 'Design I like: ' + v('f-link'));
+      if (photos.length) {
+        lines.push('', emailed
+          ? 'I have also emailed ' + photos.length + ' inspiration photo' + (photos.length > 1 ? 's' : '') + ' to you.'
+          : 'I am sending ' + photos.length + ' inspiration photo' + (photos.length > 1 ? 's' : '') + ' next.');
+      }
+      var url = waBase + '?text=' + encodeURIComponent(lines.join('\n'));
+      if (waWin && !waWin.closed) { waWin.location.href = url; } else { window.location.href = url; }
+
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send my order';
+      if (emailed) {
+        photoStep.hidden = true;
+        sentOk.hidden = false;
+        sentOk.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (photos.length && photoStep) {
+        fallback.hidden = true;
+        photoStep.hidden = false;
+        photoStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
   });
 
   $('sharePhotos').addEventListener('click', function () {
